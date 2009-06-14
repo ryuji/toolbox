@@ -1,0 +1,31 @@
+#!/usr/bin/osascript
+
+# Copyright (c) 2009 Ryuji Matsumura <ryuji@mgiken.com>
+# Licensed under the MIT license:
+#   http://www.opensource.org/licenses/mit-license.php
+
+# run ssh command in new tab in Mac OS X Leopard Terminal.app.
+
+property SSH_PATH  : "\\ssh"  # path to ssh command
+property WAIT_TIME : 0.5      # waiting time to open a new tab
+
+on getcmd(argv)
+  set cmd to SSH_PATH
+  repeat with x in argv
+    set cmd to cmd & " " & x
+  end repeat
+  cmd
+end getcmd
+
+on run argv
+  set cmd to getcmd(argv)
+  tell application "Terminal"
+    activate
+    tell application "System Events"
+      tell process "Terminal" to keystroke "t" using command down
+    end tell
+    delay WAIT_TIME
+    do script with command cmd in selected tab of the front window
+    return
+  end tell
+end run
