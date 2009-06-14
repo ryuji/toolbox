@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# Copyright (c) 2009 Ryuji Matsumura <ryuji@mgiken.com>
+# Licensed under the MIT license:
+#   http://www.opensource.org/licenses/mit-license.php
+
+# check the well known port for service name or port number.
+
+SERVICES='/etc/services'
+
+usage() {
+  echo "usage: $0 [service|port]"
+}
+
+services() {
+  cat $SERVICES | sed '/^#/d'
+}
+
+main() {
+  if [ "$1" = '-h' -o "$1" = '--help' ]
+  then
+    usage
+  elif [ $(($1 - 1)) -lt 0 ]
+  then
+    # parameter is service name
+    services | grep "^$1[[:space:]]"
+  else
+    # parameter is port number
+    services | grep "[[:space:]]$1/"
+  fi
+}
+
+case $# in
+  0) services ; exit 0 ;;
+  1) main $@  ; exit 0 ;;
+  *) usage    ; exit 1 ;;
+esac
